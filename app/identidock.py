@@ -12,10 +12,10 @@ default_name = 'no name'
 @app.route('/', methods=['GET', 'POST'])
 def mainpage():
 
+    name = default_name
+
     if request.method == 'POST':
         name = html.escape(request.form['name'], quote=True)
-    else:
-        name = default_name
 
     salted_name = salt + name
     name_hash = hashlib.sha256(salted_name.encode()).hexdigest()
