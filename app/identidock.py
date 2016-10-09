@@ -2,6 +2,7 @@ from flask import Flask, Response, request
 import requests
 import hashlib
 import redis
+import html
 
 app = Flask(__name__)
 cache = redis.StrictRedis(host='redis', port=6379, db=0)
@@ -11,7 +12,10 @@ default_name = 'no name'
 @app.route('/', methods=['GET', 'POST'])
 def mainpage():
 
-    name = request.form['name'] if request.method == 'POST' else default_name
+    if request.method == 'POST':
+        name = html.escape(request.form['name'], quote=True)
+    else:
+        name = default_name
 
     salted_name = salt + name
     name_hash = hashlib.sha256(salted_name.encode()).hexdigest()
